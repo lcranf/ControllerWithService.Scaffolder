@@ -30,9 +30,8 @@ if(!$ServiceProject) {
 }
 
 # Try and find base IRepository file.  NOTE:  As of now an error is thrown if IRepository is not found
-$baseRepositoryNamespace = (Get-ProjectType IRepository -Project (Get-Project *Common*).ProjectName).Namespace.Name
-$baseServiceNamespace = (Get-ProjectType ICrudService -Project (Get-Project *Common*).ProjectName).Namespace.Name
-
+$baseRepositoryNamespace = "EF.CodeFirst.Common.Repository"
+$baseServiceNamespace = "EF.CodeFirst.Common.Service"
 
 $serviceInterface = "I" + $ModelName + "Service"
 $interfaceOutputPath = Join-Path $OutputPath $serviceInterface
@@ -52,10 +51,6 @@ Add-ProjectItemViaTemplate $interfaceOutputPath -Template IService -Model @{
 $serviceImplementation = $ModelName + "Service"
 $implementationOutputPath = Join-Path $OutputPath $serviceImplementation
 
-if($NoIoc) {
-  $dbRegistryNamespace = (Get-ProjectType DbContextRegistry -Project (Get-Project *Domain*).ProjectName).Namespace.Name
-}
-
 Add-ProjectItemViaTemplate $implementationOutputPath -Template Service -Model @{
      Namespace = $namespace;
      ModelType = [MarshalByRefObject]$foundModelType; 
@@ -63,8 +58,7 @@ Add-ProjectItemViaTemplate $implementationOutputPath -Template Service -Model @{
      DefaultNamespace = $defaultNamespace; 
      AreaNamespace = $areaNamespace;
      ModelTypeNamespace = $EntityNamespace;
-     RepositoryNamespace = $baseRepositoryNamespace;
-     DbContextRegistryNamespace = $dbRegistryNamespace;
+     RepositoryNamespace = $baseRepositoryNamespace;     
      ServiceNamespace = $baseServiceNamespace;     
      NoIoc = $NoIoc.IsPresent;
   } -SuccessMessage "Added Service output at {0}" `

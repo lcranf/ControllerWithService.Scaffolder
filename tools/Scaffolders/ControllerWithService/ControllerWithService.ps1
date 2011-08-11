@@ -115,7 +115,6 @@ Scaffold Service -ModelName $foundModelType.Name -DefaultNamespace $defaultNames
 
 $serviceName = $foundModelType.Name + "Service"
 $ServiceNamespace = (Get-ProjectType $serviceName -Project (Get-Project $serviceProject).ProjectName).Namespace.Name
-$baseControllerNamespace = (Get-ProjectType "BaseController" -Project (Get-Project "*Common*").ProjectName).Namespace.Name
 $commonExtensionNamespace = (Get-ProjectType "MapEntityToModelExtensions" -Project (Get-Project "*Common*").ProjectName).Namespace.Name
 
 
@@ -131,8 +130,7 @@ Add-ProjectItemViaTemplate $outputPath -Template "ControllerWithService" -Model 
     RepositoriesNamespace = $repositoriesNamespace;
     ServiceNamespace = $ServiceNamespace;
     ModelTypeNamespace = $modelTypeNamespace; 
-    ControllerNamespace = $controllerNamespace;
-    BaseControllerNamespace = $baseControllerNamespace;
+    ControllerNamespace = $controllerNamespace;    
     ViewModelNamespace = $viewModelsNamespace;
     CommonExtensionNamespace = $commonExtensionNamespace;
     DbContextType = [MarshalByRefObject]$foundDbContextType;    

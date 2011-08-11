@@ -16,9 +16,6 @@ using <#= Model.ModelTypeNamespace #>;
 <# if(!string.IsNullOrEmpty(Model.ServiceNamespace)) { #>
 using <#= Model.ServiceNamespace #>;
 <# } #>
-<# if(!string.IsNullOrEmpty(Model.BaseControllerNamespace)) { #>
-using <#= Model.BaseControllerNamespace #>;
-<# } #>
 <# if(Model.CreateViewModels) { #>
 using <#= Model.ViewModelNamespace + "." + Model.ModelTypePluralized #>;
 <# } #>
@@ -44,7 +41,7 @@ namespace <#= Model.ControllerNamespace #>
         
     var routingName = Regex.Replace(Model.ControllerName, "Controller$", "", RegexOptions.IgnoreCase);
 #>
-    public class <#= Model.ControllerName #> : BaseController
+    public class <#= Model.ControllerName #> : Controller
     {
         private readonly I<#= serviceName #> _<#= serviceVariableName #>;
 					

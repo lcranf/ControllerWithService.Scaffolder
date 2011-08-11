@@ -11,9 +11,6 @@ using <#= Model.RepositoryNamespace #>;
 <# if(!string.IsNullOrEmpty(Model.ServiceNamespace)) { #>
 using <#= Model.ServiceNamespace #>;
 <# }#>
-<# if(!string.IsNullOrEmpty(Model.DbContextRegistryNamespace)) { #>
-using <#= Model.DbContextRegistryNamespace #>;
-<# }#>
 <# if(!string.IsNullOrEmpty(Model.ModelTypeNamespace)) { #>
 using <#= Model.ModelTypeNamespace #>;
 <# } #>
@@ -29,7 +26,7 @@ namespace <#= Model.Namespace #>
         <# if(Model.NoIoc) { #>
 // If you are using Dependency Injection, you can delete the following constructor   
         public <#= modelName #>Service()
-            : this(new Repository<<#= modelName#>>(new DbContextRegistry()))
+            : this(new Repository<<#= modelName#>>(null /* TODO: Please provide an implementation of Ef.CodeFirst.Common.Db.IDbContextRegistry!!! */))
         {
         }
 
