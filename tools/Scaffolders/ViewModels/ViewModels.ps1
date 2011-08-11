@@ -27,7 +27,7 @@ if (!$foundModelType)
 }
 
 $namespace = (Get-Project $Project).Properties.Item("DefaultNamespace").Value
-$baseViewModelNamespace = (Get-ProjectType IEditModel -Project (Get-Project *Common*).ProjectName).Namespace.Name
+$baseViewModelNamespace = "EF.CodeFirst.Common.ViewModels"
 $defaultNamespace = $ViewModelNamespace + "." + $ModelPluralized
 $baseModelFileName = "Base" + $ModelName + "Model"
 $outputPath = Join-Path $viewModelOutputPath $baseModelFileName
