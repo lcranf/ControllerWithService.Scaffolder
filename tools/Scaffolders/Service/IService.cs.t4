@@ -1,0 +1,20 @@
+﻿<#@ template language="C#" HostSpecific="True"  inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+<#@ import namespace="EnvDTE" #>
+<# if(!string.IsNullOrEmpty(Model.ServiceNamespace)) { #>
+using <#= Model.ServiceNamespace #>;
+<# }#>
+<# if(!string.IsNullOrEmpty(Model.ModelTypeNamespace)) { #>
+using <#= Model.ModelTypeNamespace #>;
+<# } #>
+
+namespace <#= Model.Namespace #>
+{
+  <#
+    var modelType = (CodeType)Model.ModelType; 
+    var modelName = modelType.Name;	 
+  #>
+  public interface I<#= modelName #>Service : ICrudService<<#= modelName #>>
+    {
+    }    
+}

@@ -1,0 +1,65 @@
+﻿<#@ template language="C#" HostSpecific="True"  inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="EnvDTE" #>
+<# if(!(Model.IsBaseClass) && !string.IsNullOrEmpty(Model.BaseViewModelNamespace)) { #>
+using <#= Model.BaseViewModelNamespace #>;
+<# } #>
+
+namespace <#= Model.DefaultNamespace #>
+{
+  <#  
+    var modelType = (CodeType)Model.ModelType;
+    var modelName = modelType.Name;	
+    var possiblePrimaryKeys = (!(Model.IsBaseClass) && Model.IsEditable) ? new string[] {} : new string[] { "Id", modelName + "Id" };
+    var relatedEntities = ((IEnumerable)Model.RelatedEntities).OfType<RelatedEntityInfo>();	
+    var publicProperties = (IEnumerable)modelType.VisibleMembers().OfType<CodeProperty>()
+                                                 .Where(prop =>
+                                                        prop.Access == vsCMAccess.vsCMAccessPublic &&
+                                                        prop.Getter != null &&
+                                                        prop.Getter.Access == vsCMAccess.vsCMAccessPublic &&
+                                                        !possiblePrimaryKeys.Contains(prop.Name) && Model.IsEditable);
+    var extendedBaseClass = (!Model.IsBaseClass) ? ": " + Model.BaseClassName : string.Empty;
+    if(!(Model.IsBaseClass) && publicProperties.OfType<CodeProperty>().Any())
+    {
+       var keys = new string[] { "Id", modelName + "Id" };
+       
+       publicProperties = publicProperties.OfType<CodeProperty>().Where(prop => keys.Contains(prop.Name));
+    }
+  #>
+
+    public <#=  (Model.IsBaseClass) ? "abstract " : string.Empty #>class <#= Model.ClassName #> <#= extendedBaseClass #><#= (!string.IsNullOrEmpty(Model.ViewModelInterface) ? ", " + Model.ViewModelInterface : string.Empty) #>
+    {
+        <# foreach(CodeProperty property in publicProperties) { #>
+
+        public <#= property.Type.AsString #> <#= property.Name #> { get; <#= GetFunctionAsString(property.Setter) #> }
+        <# } #>
+
+    }
+}
+
+<#+
+    string GetFunctionAsString(CodeFunction func) {        
+
+        if(func == null) return "private set;";
+
+        switch (func.Access)
+        {		    
+            case vsCMAccess.vsCMAccessPrivate:
+              return "private set;";
+              break;
+            case vsCMAccess.vsCMAccessProject:
+            case vsCMAccess.vsCMAccessProtected:
+            case vsCMAccess.vsCMAccessDefault:
+              return "protected set;";
+              break;
+            default:
+              return "set;";
+              break;
+        }        
+}
+#>

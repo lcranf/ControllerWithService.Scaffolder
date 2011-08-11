@@ -1,0 +1,2 @@
+This file is added to workaround NuGet issue (http://nuget.codeplex.com/workitem/595).
+It should be deleted automatically after installation is completed. If not, you can delete it manually.

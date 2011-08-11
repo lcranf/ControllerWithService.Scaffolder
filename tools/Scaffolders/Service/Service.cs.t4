@@ -1,0 +1,42 @@
+﻿<#@ template language="C#" HostSpecific="True"  inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="EnvDTE" #>
+<# if(!string.IsNullOrEmpty(Model.RepositoryNamespace)) { #>
+using <#= Model.RepositoryNamespace #>;
+<# }#>
+<# if(!string.IsNullOrEmpty(Model.ServiceNamespace)) { #>
+using <#= Model.ServiceNamespace #>;
+<# }#>
+<# if(!string.IsNullOrEmpty(Model.DbContextRegistryNamespace)) { #>
+using <#= Model.DbContextRegistryNamespace #>;
+<# }#>
+<# if(!string.IsNullOrEmpty(Model.ModelTypeNamespace)) { #>
+using <#= Model.ModelTypeNamespace #>;
+<# } #>
+
+namespace <#= Model.Namespace #>
+{
+  <#
+    var modelType = (CodeType)Model.ModelType;
+    var modelName = modelType.Name;
+  #>
+  public class <#= modelName #>Service : CrudService<<#= modelName #>>, I<#= modelName #>Service
+    {
+        <# if(Model.NoIoc) { #>
+// If you are using Dependency Injection, you can delete the following constructor   
+        public <#= modelName #>Service()
+            : this(new Repository<<#= modelName#>>(new DbContextRegistry()))
+        {
+        }
+
+        <# } #>
+public <#= modelName #>Service(IRepository<<#= modelName #>> repository) 
+            : base(repository)
+        {
+        }
+    }
+}
