@@ -7,9 +7,16 @@ if (-not (Get-Command Invoke-Scaffolder)) { return }
 if ($project) { $projectName = $project.Name }
 Get-ProjectItem "NuGetDummy.txt" -Project $projectName | %{ $_.Delete() }
 
+$project.Object.References.Add("Microsoft.Web.Infrastructure"); 
+
 # TODO: modify ".cs" when decide to support VB too
 # $lang = Get-ProjectLanguage
 # if ($lang -eq $null) { $lang = "cs" }
+
+$dbContext = [System.Text.RegularExpressions.Regex]::Replace($projectName, "[^a-zA-Z0-9]", "") + "Context"
+
+# Build Default DbContext and related files
+Scaffold CustomDbContext $dbContext
 
 Write-Host " "
 Write-Host "Scaffold ControllerWithService scaffolder has been successfully installed with dependencies."

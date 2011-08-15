@@ -1,0 +1,18 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+
+namespace <#= Model.DbContextNamespace #>
+{    
+    public class <#= Model.DbInitializerName #> : DropCreateDatabaseIfModelChanges<<#= Model.DbContextType #>>
+    {
+        protected override void Seed(<#= Model.DbContextType #> context)
+        {
+            //Add code here to seed the database...
+        }
+    }
+}

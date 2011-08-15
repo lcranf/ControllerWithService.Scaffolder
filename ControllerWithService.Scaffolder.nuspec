@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>ControllerWithService.Scaffolder</id>
-    <version>0.0.1</version>
+    <version>0.0.7</version>
     <authors>Lance Cranford</authors>
     <owners>Lance Cranford</owners>
     <licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
@@ -15,6 +15,9 @@
       <dependency id="MVCScaffolding" version="1.0.0" />
       <dependency id="EF.CodeFirst.Common" version="0.0.1" />
       <dependency id="Simple.Mvc" version="0.0.1" />
+      <dependency id="WebActivator" version="1.4.2" />
+      <dependency id="Ninject.Extensions.Conventions" version="2.2.0.5" />
+      <dependency id="CommonServiceLocator.NinjectAdapter" version="1.0.0.0" />
    </dependencies>
   </metadata>
 </package>

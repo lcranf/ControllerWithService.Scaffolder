@@ -1,0 +1,67 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+using System.Data.Entity;
+using System.Web.Mvc;
+using EF.CodeFirst.Common.Db;
+using EF.CodeFirst.Common.Repository;
+using Microsoft.Practices.ServiceLocation;
+using Ninject;
+using Ninject.Extensions.Conventions;
+using NinjectAdapter;
+using Simple.Mvc.ModelBinders;
+using <#= Model.DbContextNamespace #>;
+
+namespace <#= Model.DefaultNamespace #>
+{
+    public static class NinjectRegistration
+    {
+        public static void Register(IKernel kernel)
+        {
+            RegisterRepositories(kernel);
+            RegisterSmartModelBinder(kernel);
+            RegisterDbContext(kernel);
+            AutoRegisterServices(kernel);
+            
+            var locator = new NinjectServiceLocator(kernel);
+
+            //register Ninject with Common.ServiceLocator
+            ServiceLocator.SetLocatorProvider(() => locator);
+
+            //set model binder
+            ModelBinders.Binders.DefaultBinder = ServiceLocator.Current.GetInstance<SmartModelBinder>();
+        }
+
+        private static void RegisterRepositories(IKernel kernel)
+        {
+            kernel.Bind(typeof (IRepository<>)).To(typeof (Repository<>)).InTransientScope();
+        }
+
+        private static void RegisterSmartModelBinder(IKernel kernel)
+        {
+            kernel.Bind<IFilteredModelBinder>().To<EntityModelBinder>().InTransientScope();
+            kernel.Bind<SmartModelBinder>().ToSelf().InTransientScope();
+        }
+
+        private static void RegisterDbContext(IKernel kernel)
+        {
+            kernel.Bind<DbContext>().To<<#= Model.DbContextType #>>().InTransientScope();
+            kernel.Bind<IDbContextRegistry>().To<<#= Model.DbRegistryName #>>().InRequestScope();
+        }
+
+        private static void AutoRegisterServices(IKernel kernel)
+        {
+            var scanner = new AssemblyScanner();
+
+            //TODO: Query assembly where Services will be located
+            var ass = typeof (NinjectRegistration).Assembly;
+
+            scanner.From(ass);
+            scanner.BindWithDefaultConventions();
+            scanner.AutoLoadModules();
+            scanner.InTransientScope();
+
+            //start search
+            kernel.Scan(scanner);
+        }
+    }
+}
