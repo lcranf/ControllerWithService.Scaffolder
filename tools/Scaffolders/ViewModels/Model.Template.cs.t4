@@ -6,9 +6,15 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="EnvDTE" #>
+<#@ include file="..\Helpers\sharedFunctions.t4" #>
 <# if(!(Model.IsBaseClass) && !string.IsNullOrEmpty(Model.BaseViewModelNamespace)) { #>
 using <#= Model.BaseViewModelNamespace #>;
 <# } #>
+
+<# if (Model.IsBaseClass && Model.CreateViewModels ) {#>
+using System.Collections.Generic;
+using System.Web.Mvc;
+<#}#>
 
 namespace <#= Model.DefaultNamespace #>
 {
@@ -24,12 +30,15 @@ namespace <#= Model.DefaultNamespace #>
                                                         prop.Getter.Access == vsCMAccess.vsCMAccessPublic &&
                                                         !possiblePrimaryKeys.Contains(prop.Name) && Model.IsEditable);
     var extendedBaseClass = (!Model.IsBaseClass) ? ": " + Model.BaseClassName : string.Empty;
+	var relatedEntitiesOneToMany = GetManyToOneEntities(modelType.VisibleMembers().OfType<CodeProperty>().ToList()); 
+	
     if(!(Model.IsBaseClass) && publicProperties.OfType<CodeProperty>().Any())
     {
        var keys = new string[] { "Id", modelName + "Id" };
        
        publicProperties = publicProperties.OfType<CodeProperty>().Where(prop => keys.Contains(prop.Name));
     }
+	
   #>
 
     public <#=  (Model.IsBaseClass) ? "abstract " : string.Empty #>class <#= Model.ClassName #> <#= extendedBaseClass #><#= (!string.IsNullOrEmpty(Model.ViewModelInterface) ? ", " + Model.ViewModelInterface : string.Empty) #>
@@ -37,8 +46,16 @@ namespace <#= Model.DefaultNamespace #>
         <# foreach(CodeProperty property in publicProperties) { #>
 
         public <#= property.Type.AsString #> <#= property.Name #> { get; <#= GetFunctionAsString(property.Setter) #> }
-        <# } #>
+        <# } #>        
+<# if (Model.IsBaseClass && Model.CreateViewModels) {#>
+        //One to Many reference objects		
+<#relatedEntitiesOneToMany.ForEach(entity => {#>
+		public IEnumerable<SelectListItem> <#= Pluralize(entity) #> { get; set; }
+<#});#>
+		
 
+		
+<# }#>
     }
 }
 

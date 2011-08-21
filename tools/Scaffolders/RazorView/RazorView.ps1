@@ -58,4 +58,5 @@ Add-ProjectItemViaTemplate $outputPath -Template $Template -Model @{
 	ViewDataType = [MarshalByRefObject]$foundModelType;
 	ViewDataTypeName = $foundModelType.Name;
 	RelatedEntities = $relatedEntities;
+	CreateViewModels = $CreateViewModels.IsPresent;
 } -SuccessMessage "Added $ViewName view at '{0}'" -TemplateFolders $TemplateFolders -Project $Project -CodeLanguage $CodeLanguage -Force:$Force

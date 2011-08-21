@@ -12,7 +12,14 @@
 <#@ import namespace="System.Data.Objects.DataClasses" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Reflection" #>
+<#@ include file="..\Helpers\sharedFunctions.t4" #>
 <# var viewDataType = (EnvDTE.CodeType) Model.ViewDataType; #>
+
+<#
+ var modelType = (CodeType)Model.ViewDataType;
+ var relatedEntitiesOneToMany = GetManyToOneEntities(modelType.VisibleMembers().OfType<CodeProperty>().ToList()); 
+#>
+
 <# if(viewDataType != null) { #>
 @model <#= viewDataType.FullName #>
 
@@ -52,6 +59,23 @@ foreach (RelatedEntityInfo relation in ParentRelations) {
 <#
 }
 #>
+
+<# if (Model.CreateViewModels) { 
+
+relatedEntitiesOneToMany.ForEach(entity => {	
+#>
+<div class="editor-label">
+    @Html.LabelFor(model => model.<#= entity #>)
+</div>
+
+<div class="editor-field">
+    @Html.DropDownListFor(model => model.<#= entity #>, Model.<#= Pluralize(entity) #>, "Select item..")
+    @Html.ValidationMessageFor(model => model.<#= entity #>)
+</div>
+
+<#}); }#>
+
+
 <#+
 // Describes the information about a property on the model
 class ModelProperty {

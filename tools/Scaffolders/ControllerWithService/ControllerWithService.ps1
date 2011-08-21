@@ -129,8 +129,8 @@ Add-ProjectItemViaTemplate $outputPath -Template "ControllerWithService" -Model 
     DbContextNamespace = $dbContextNamespace;
     RepositoriesNamespace = $repositoriesNamespace;
     ServiceNamespace = $ServiceNamespace;
-    ModelTypeNamespace = $modelTypeNamespace; 
-    ControllerNamespace = $controllerNamespace;    
+    ModelTypeNamespace = $modelTypeNamespace;
+    ControllerNamespace = $controllerNamespace;
     ViewModelNamespace = $viewModelsNamespace;
     CommonExtensionNamespace = $commonExtensionNamespace;
     DbContextType = [MarshalByRefObject]$foundDbContextType;    
@@ -147,7 +147,7 @@ if($CreateViewModels) {
        -Area $Area -AreaNamespace $areaNamespace -ModelNamespace $modelTypeNamespace `
        -ViewModelNamespace $viewModelsNamespace -PrimaryKey = $primaryKey `
        -ViewModelOutputPath $viewModelsPath -DefaultNamespace $defaultNamespace `
-       -Project $Project -CodeLanguage $CodeLanguage -Force:$overwriteFilesExceptController       
+       -Project $Project -CodeLanguage $CodeLanguage -CreateViewModels:$CreateViewModels -Force:$overwriteFilesExceptController       
 }
 
 if (!$NoChildItems) {

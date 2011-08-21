@@ -1,0 +1,48 @@
+﻿<#@ template language="C#" HostSpecific="True"  inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Data.Entity.dll" #>
+<#@ assembly name="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.Entity.Design.dll" #>
+<#@ assembly name="C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.Entity.Design.dll" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System.Globalization" #>
+<#+
+
+
+List<string> GetManyToOneEntities(List<CodeProperty> codeProperties)
+{
+	var results = new List<string>();
+		        
+		foreach (var item in codeProperties) { 			
+			var baseMembers = item.Type.CodeType.Bases.OfType<CodeType>().Where(f => f.Name == "BaseReferenceEntity" || f.Name == "BaseEntity").ToList();
+			if (baseMembers.Count > 0 && Model.CreateViewModels) { results.Add(item.Name);	}}	
+						
+	return results;
+}
+
+
+string FixNamingConvention(string source)
+{   
+	if (string.IsNullOrEmpty(source) || source.Length < 2) return source;
+	
+	return source.Substring(0,1).ToLower() + source.Substring(1);		
+}
+
+string Pluralize(string source)
+{		
+	var _helperPluralizationservice =
+        System.Data.Entity.Design.PluralizationServices.PluralizationService.CreateService(CultureInfo.CurrentCulture);
+
+	//if (_helperPluralizationservice.IsPlural(source)) return source;
+	
+	string pluralizedSource = _helperPluralizationservice.Pluralize(source);
+		
+	//TODO: I think that is a bug with the Pluralize method with word that already end with S
+	return source.EndsWith("s",true,CultureInfo.CurrentCulture) ? source + "es" : pluralizedSource;		
+}
+		
+#>

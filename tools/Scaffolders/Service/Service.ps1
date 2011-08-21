@@ -14,10 +14,18 @@ param(
 
 # If you have specified a model type
 $foundModelType = Get-ProjectType $ModelName -Project $Project -BlockUi
+$modelTypeNamespace = $EntityNamespace
+
 if (!$foundModelType) 
 {
    Write-Error "Model Name not found in project: $ModelName .  Please specify a ModelName!!!"  
    return
+}
+else {
+   if (!$entityNamespace) {
+      Write-Warning "No Namespace provided for Entity.  Defaulting to Model Type" 
+      $modelTypeNamespace = $foundModelType.Namespace.Name
+   }
 }
 
 $namespace = $DefaultNamespace
@@ -42,7 +50,7 @@ Add-ProjectItemViaTemplate $interfaceOutputPath -Template IService -Model @{
      PrimaryKey = [string]$primaryKey; 
      DefaultNamespace = $defaultNamespace; 
      AreaNamespace = $areaNamespace;
-     ModelTypeNamespace = $EntityNamespace;     
+     ModelTypeNamespace = $modelTypeNamespace;     
      ServiceNamespace = $baseServiceNamespace;
      NoIoc = $NoIoc.IsPresent;
   } -SuccessMessage "Added Service output at {0}" `
@@ -57,8 +65,8 @@ Add-ProjectItemViaTemplate $implementationOutputPath -Template Service -Model @{
      PrimaryKey = [string]$primaryKey; 
      DefaultNamespace = $defaultNamespace; 
      AreaNamespace = $areaNamespace;
-     ModelTypeNamespace = $EntityNamespace;
-     RepositoryNamespace = $baseRepositoryNamespace;     
+     ModelTypeNamespace = $modelTypeNamespace;
+     RepositoryNamespace = $baseRepositoryNamespace;
      ServiceNamespace = $baseServiceNamespace;     
      NoIoc = $NoIoc.IsPresent;
   } -SuccessMessage "Added Service output at {0}" `

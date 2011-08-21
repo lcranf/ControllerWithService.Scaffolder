@@ -14,6 +14,7 @@ param(
     [string]$PrimaryKey,
 	[string]$CodeLanguage,
 	[string[]]$TemplateFolders,
+	[switch]$CreateViewModels = $false,
 	[switch]$Force = $false
 )
 
@@ -47,6 +48,7 @@ Add-ProjectItemViaTemplate $outputPath -Template "Model.Template" -Model @{
         IsEditable = $True;
         IncludePrimaryKey = $True;
         SkipAllProperties = $False;
+		CreateViewModels = $CreateViewModels.IsPresent;
     } -SuccessMessage "Added Model {0}" -TemplateFolders $TemplateFolders -Project $Project -CodeLanguage $CodeLanguage -Force:$Force
 
 $createModelFileName = $ModelName + "CreateModel"
@@ -70,6 +72,7 @@ Add-ProjectItemViaTemplate $outputPath -Template "Model.Template" -Model @{
         IsEditable = $False;
         IncludePrimaryKey = $False;
         SkipAllProperties = $True;
+		CreateViewModels = $CreateViewModels.IsPresent;
     } -SuccessMessage "Added Model {0}" -TemplateFolders $TemplateFolders -Project $Project -CodeLanguage $CodeLanguage -Force:$Force
 
 $editModelFileName = $ModelName + "EditModel"
@@ -93,4 +96,5 @@ Add-ProjectItemViaTemplate $outputPath -Template "Model.Template" -Model @{
         IsEditable = $True;
         IncludePrimaryKey = $True;
         SkipAllProperties = $False;
+		CreateViewModels = $CreateViewModels.IsPresent;
     } -SuccessMessage "Added Model {0}" -TemplateFolders $TemplateFolders -Project $Project -CodeLanguage $CodeLanguage -Force:$Force   
