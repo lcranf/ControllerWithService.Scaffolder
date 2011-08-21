@@ -28,7 +28,15 @@ else {
    }
 }
 
-$namespace = $DefaultNamespace
+
+if (!$DefaultNamespace) {
+   Write-Warning "No Default Namespace provided.  Defaulting Services namespace"
+   $namespace = $Project + "." + $OutputPath
+}
+else {
+   $namespace = $DefaultNamespace
+}
+
 
 # If ServiceProject is omitted, then fallback to the default project provided by the NuGet Manager
 if(!$ServiceProject) {
