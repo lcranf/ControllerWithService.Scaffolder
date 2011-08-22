@@ -5,6 +5,8 @@ param(
     [string]$ServiceProject,    
     [string]$EntityNamespace,    
     [string]$OutputPath = "Services",
+    [string]$DbContextType,
+    [string]$DbContextTypeNamespace,
     [string]$DefaultNamespace,
 	[string]$CodeLanguage,
 	[string[]]$TemplateFolders,
@@ -48,9 +50,20 @@ if(!$ServiceProject) {
 # Try and find base IRepository file.  NOTE:  As of now an error is thrown if IRepository is not found
 $baseRepositoryNamespace = "EF.CodeFirst.Common.Repository"
 $baseServiceNamespace = "EF.CodeFirst.Common.Service"
+$dbContextType = $DbContextType
+$dbContextTypeNamespace = $DbContextTypeNamespace
 
 $serviceInterface = "I" + $ModelName + "Service"
 $interfaceOutputPath = Join-Path $OutputPath $serviceInterface
+
+
+# If NoIoc switch is supplied then make sure DbContext is supplied
+if($NoIoc.IsPresent -and !$dbContextType) {
+    $dbContextName = [System.Text.RegularExpressions.Regex]::Replace((Get-Project $Project).Name, "[^a-zA-Z0-9]", "") + "Context"
+    $dbContext = Get-ProjectType $dbContextName -Project $Project
+    $dbContextType = $dbContext.Name
+    $dbContextTypeNamespace = $dbContext.Namespace.Name    
+}
 
 Add-ProjectItemViaTemplate $interfaceOutputPath -Template IService -Model @{
      Namespace = $namespace;
@@ -60,6 +73,8 @@ Add-ProjectItemViaTemplate $interfaceOutputPath -Template IService -Model @{
      AreaNamespace = $areaNamespace;
      ModelTypeNamespace = $modelTypeNamespace;     
      ServiceNamespace = $baseServiceNamespace;
+     DbContextType = $dbContextType;
+     DbContextNamespace = $dbContextTypeNamespace;
      NoIoc = $NoIoc.IsPresent;
   } -SuccessMessage "Added Service output at {0}" `
 	-TemplateFolders $TemplateFolders -Project $ServiceProject -CodeLanguage $CodeLanguage -Force:$Force
@@ -75,7 +90,9 @@ Add-ProjectItemViaTemplate $implementationOutputPath -Template Service -Model @{
      AreaNamespace = $areaNamespace;
      ModelTypeNamespace = $modelTypeNamespace;
      RepositoryNamespace = $baseRepositoryNamespace;
-     ServiceNamespace = $baseServiceNamespace;     
+     ServiceNamespace = $baseServiceNamespace;
+     DbContextType = $dbContextType;
+     DbContextNamespace = $dbContextTypeNamespace;
      NoIoc = $NoIoc.IsPresent;
   } -SuccessMessage "Added Service output at {0}" `
 	-TemplateFolders $TemplateFolders -Project $ServiceProject -CodeLanguage $CodeLanguage -Force:$Force
