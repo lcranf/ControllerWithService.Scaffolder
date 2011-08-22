@@ -1,0 +1,1 @@
+nuget pack ControllerWithService.Scaffolder.nuspec
