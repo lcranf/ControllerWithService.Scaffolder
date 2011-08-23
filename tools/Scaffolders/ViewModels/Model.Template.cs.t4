@@ -43,13 +43,14 @@ namespace <#= Model.DefaultNamespace #>
 
     public <#=  (Model.IsBaseClass) ? "abstract " : string.Empty #>class <#= Model.ClassName #> <#= extendedBaseClass #><#= (!string.IsNullOrEmpty(Model.ViewModelInterface) ? ", " + Model.ViewModelInterface : string.Empty) #>
     {
-        <# foreach(CodeProperty property in publicProperties) { #>
+        <# foreach(CodeProperty property in publicProperties) { if (!relatedEntitiesOneToMany.Exists(r => r == property.Name)){#>
 
         public <#= property.Type.AsString #> <#= property.Name #> { get; <#= GetFunctionAsString(property.Setter) #> }
-        <# } #>        
-<# if (Model.IsBaseClass && Model.CreateViewModels) {#>
+        <# }} #>        
+<# if (Model.IsBaseClass) {#>
         //One to Many reference objects		
 <#relatedEntitiesOneToMany.ForEach(entity => {#>
+		public int <#= entity #> { get; set; }
 		public IEnumerable<SelectListItem> <#= Pluralize(entity) #> { get; set; }
 <#});#>
 		
