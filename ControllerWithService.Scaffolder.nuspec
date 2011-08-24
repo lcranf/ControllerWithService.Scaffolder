@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>ControllerWithService.Scaffolder</id>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <authors>Lance Cranford</authors>
     <owners>Lance Cranford</owners>
     <licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
