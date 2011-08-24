@@ -16,7 +16,7 @@
 <# var viewDataType = (EnvDTE.CodeType) Model.ViewDataType; #>
 
 <#
- var modelType = (CodeType)Model.ViewDataType;
+ var modelType = (CodeType)Model.ModelDataType;
  var relatedEntitiesOneToMany = GetManyToOneEntities(modelType.VisibleMembers().OfType<CodeProperty>().ToList()); 
 #>
 
@@ -27,7 +27,7 @@
 @* This partial view defines form fields that will appear when creating and editing entities *@
 
 <#
-foreach (ModelProperty property in GetModelProperties(Model.ViewDataType, false)) {
+foreach (ModelProperty property in GetModelProperties(Model.ViewDataType, false)) if (!relatedEntitiesOneToMany.Exists(r => r == property.Name)){ {
     if (!property.IsPrimaryKey && !property.IsForeignKey && !property.IsReadOnly) {
 #>
 <div class="editor-label">
@@ -40,7 +40,7 @@ foreach (ModelProperty property in GetModelProperties(Model.ViewDataType, false)
 
 <#
     }
-}
+}}
 #>
 <#
 foreach (RelatedEntityInfo relation in ParentRelations) {

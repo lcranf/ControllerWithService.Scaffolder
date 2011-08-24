@@ -53,5 +53,5 @@ param(
     
     }
        
-	Scaffold $ViewScaffolder -Controller $Controller -ViewName $_ -ModelType $razorModelType.FullName -Template $_ -Area $Area -Layout $Layout -SectionNames $SectionNames -PrimarySectionName $PrimarySectionName -ReferenceScriptLibraries:$ReferenceScriptLibraries -Project $Project -CodeLanguage $CodeLanguage -OverrideTemplateFolders $TemplateFolders -Force:$Force -BlockUi -CreateViewModels:$CreateViewModels
+	Scaffold $ViewScaffolder -Controller $Controller -ViewName $_ -ModelType $razorModelType.FullName -EntityModelType $foundModelType.FullName -Template $_ -Area $Area -Layout $Layout -SectionNames $SectionNames -PrimarySectionName $PrimarySectionName -ReferenceScriptLibraries:$ReferenceScriptLibraries -Project $Project -CodeLanguage $CodeLanguage -OverrideTemplateFolders $TemplateFolders -Force:$Force -BlockUi -CreateViewModels:$CreateViewModels
 }
